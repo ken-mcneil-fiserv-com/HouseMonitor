@@ -14,17 +14,19 @@ public class HouseMonitor {
     public static void main(String args[]) throws Exception {
         System.out.println("HouseMonitor ... starting.");
         twitter = setupTwitter();
-        notifyTwitter("HouseMonitor ... starting.", twitter);
+      //  notifyTwitter("HouseMonitor ... starting.", twitter);
         final GpioController gpio = GpioFactory.getInstance();
         final GpioPinDigitalInput motionsensor = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN);
         configureSenssor(motionsensor);
-         notifyTwitter("HouseMonitor ... started.", twitter);
+     //    notifyTwitter("HouseMonitor ... started.", twitter);
+      System.out.println("HouseMonitor ... started.");
         sleep();
       
     }
     
     
   private static void configureSenssor(final GpioPinDigitalInput sensor) {
+    System.out.println("HouseMonitor ... configured.");
     sensor.addListener(new GpioPinListenerDigital() {
       @Override
       public void handleGpioPinDigitalStateChangeEvent(final GpioPinDigitalStateChangeEvent event) {
@@ -32,8 +34,11 @@ public class HouseMonitor {
       }
 
       private void handleSensorInput( final GpioPinDigitalStateChangeEvent event) {
-        if (event.getState().isHigh()) {
+        System.out.println(event.toString());
+        if (event.getState().isLow()) {
           notifyTwitter("Montion Detected: ", twitter);
+        } else {
+         notifyTwitter("Montion Detected: ", twitter);
         }
       }
       
@@ -43,7 +48,8 @@ public class HouseMonitor {
    
    private static void sleep() throws InterruptedException {
     for (;;) {
-      Thread.sleep(1000);
+        System.out.println("sleeping");
+      Thread.sleep(5000);
     }
   }
     
@@ -63,6 +69,5 @@ public class HouseMonitor {
     Twitter twitter = new TwitterFactory().getInstance();
       return twitter;
   }
-
 
 }
